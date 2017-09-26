@@ -91,12 +91,13 @@ public class ActorCriticCompGraph<NN extends ActorCriticCompGraph> implements IA
         }
         ComputationGraphConfiguration cgConf = cg.getConfiguration();
         int iterationCount = cgConf.getIterationCount();
-        cg.getUpdater().update(gradient[0], iterationCount, batchSize);
+        int epochCount = cgConf.getEpochCount();
+        cg.getUpdater().update(gradient[0], iterationCount, epochCount, batchSize);
         cg.params().subi(gradient[0].gradient());
         Collection<IterationListener> iterationListeners = cg.getListeners();
         if (iterationListeners != null && iterationListeners.size() > 0) {
             for (IterationListener listener : iterationListeners) {
-                listener.iterationDone(cg, iterationCount);
+                listener.iterationDone(cg, iterationCount, epochCount);
             }
         }
         cgConf.setIterationCount(iterationCount + 1);
